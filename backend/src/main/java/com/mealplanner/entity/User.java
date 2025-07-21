@@ -1,15 +1,7 @@
 package com.mealplanner.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "users")
@@ -19,58 +11,42 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank
-    @Email
-    @Column(unique = true, nullable = false)
+    @Column(name = "name", nullable = false)
+    private String name;
+    
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     
-    @NotBlank
-    @Size(min = 6)
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
     
-    @NotBlank
-    @Size(max = 100)
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "diet_preference")
+    private DietPreference dietPreference;
     
-    @NotBlank
-    @Size(max = 100)
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-    
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-    
-    @Size(max = 20)
-    private String gender;
-    
-    @Column(name = "height_cm")
-    private Integer heightCm;
-    
-    @Column(name = "weight_kg", precision = 5, scale = 2)
-    private BigDecimal weightKg;
-    
-    @Size(max = 50)
-    @Column(name = "activity_level")
-    private String activityLevel;
-    
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     
-    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Constructors
-    public User() {}
+    public enum DietPreference {
+        VEG, NON_VEG, MIXED
+    }
     
-    public User(String email, String passwordHash, String firstName, String lastName) {
+    // Default constructor
+    public User() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.dietPreference = DietPreference.MIXED;
+    }
+    
+    // Constructor with required fields
+    public User(String name, String email, String passwordHash) {
+        this();
+        this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
     
     // Getters and Setters
@@ -80,6 +56,14 @@ public class User {
     
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
     
     public String getEmail() {
@@ -98,60 +82,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
     
-    public String getFirstName() {
-        return firstName;
+    public DietPreference getDietPreference() {
+        return dietPreference;
     }
     
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-    
-    public String getLastName() {
-        return lastName;
-    }
-    
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-    
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-    
-    public String getGender() {
-        return gender;
-    }
-    
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-    
-    public Integer getHeightCm() {
-        return heightCm;
-    }
-    
-    public void setHeightCm(Integer heightCm) {
-        this.heightCm = heightCm;
-    }
-    
-    public BigDecimal getWeightKg() {
-        return weightKg;
-    }
-    
-    public void setWeightKg(BigDecimal weightKg) {
-        this.weightKg = weightKg;
-    }
-    
-    public String getActivityLevel() {
-        return activityLevel;
-    }
-    
-    public void setActivityLevel(String activityLevel) {
-        this.activityLevel = activityLevel;
+    public void setDietPreference(DietPreference dietPreference) {
+        this.dietPreference = dietPreference;
     }
     
     public LocalDateTime getCreatedAt() {
@@ -170,18 +106,8 @@ public class User {
         this.updatedAt = updatedAt;
     }
     
-    // Helper methods
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
-    
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 } 

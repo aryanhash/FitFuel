@@ -1,12 +1,13 @@
 package com.mealplanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "recipes")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Recipe {
     
     @Id
@@ -16,42 +17,20 @@ public class Recipe {
     @Column(name = "name", nullable = false)
     private String name;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private RecipeType type;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
     
-    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private MealCategory category;
+    private String category;
     
-    @Column(name = "ingredients", columnDefinition = "TEXT", nullable = false)
-    private String ingredients;
+    @Column(name = "type", nullable = false)
+    private String type;
     
-    @Column(name = "instructions", columnDefinition = "TEXT", nullable = false)
-    private String instructions;
+    @Column(name = "cuisine_type")
+    private String cuisineType;
     
-    @Column(name = "calories", nullable = false)
-    private Integer calories;
-    
-    @Column(name = "protein", precision = 5, scale = 2)
-    private BigDecimal protein;
-    
-    @Column(name = "carbs", precision = 5, scale = 2)
-    private BigDecimal carbs;
-    
-    @Column(name = "fat", precision = 5, scale = 2)
-    private BigDecimal fat;
-    
-    @Column(name = "fiber", precision = 5, scale = 2)
-    private BigDecimal fiber;
-    
-    @ElementCollection
-    @CollectionTable(name = "recipe_tags", joinColumns = @JoinColumn(name = "recipe_id"))
-    @Column(name = "tag")
-    private List<String> tags;
-    
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "diet_type")
+    private String dietType;
     
     @Column(name = "prep_time")
     private Integer prepTime;
@@ -59,12 +38,56 @@ public class Recipe {
     @Column(name = "cook_time")
     private Integer cookTime;
     
+    @Column(name = "total_time")
+    private Integer totalTime;
+    
     @Column(name = "servings")
     private Integer servings;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "difficulty")
-    private Difficulty difficulty;
+    @Column(name = "difficulty_level")
+    private String difficultyLevel;
+    
+    @Column(name = "ingredients", columnDefinition = "TEXT[]")
+    private List<String> ingredients;
+    
+    @Column(name = "instructions", columnDefinition = "TEXT[]")
+    private List<String> instructions;
+    
+    @Column(name = "calories")
+    private Integer calories;
+    
+    @Column(name = "protein")
+    private Double protein;
+    
+    @Column(name = "carbs")
+    private Double carbs;
+    
+    @Column(name = "fat")
+    private Double fat;
+    
+    @Column(name = "fiber")
+    private Double fiber;
+    
+    @Column(name = "sugar")
+    private Double sugar;
+    
+    @Column(name = "sodium")
+    private Double sodium;
+    
+    @Column(name = "image_url")
+    private String imageUrl;
+    
+    @Column(name = "source")
+    private String source;
+    
+    @Column(name = "external_id")
+    private String externalId;
+    
+    @Column(name = "external_url")
+    private String externalUrl;
+    
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -72,36 +95,11 @@ public class Recipe {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    public enum RecipeType {
-        VEG, NON_VEG
-    }
-    
-    public enum MealCategory {
-        BREAKFAST, LUNCH, DINNER, SNACK
-    }
-    
-    public enum Difficulty {
-        EASY, MEDIUM, HARD
-    }
-    
-    // Default constructor
+    // Constructors
     public Recipe() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.servings = 1;
-        this.difficulty = Difficulty.MEDIUM;
-    }
-    
-    // Constructor with required fields
-    public Recipe(String name, RecipeType type, MealCategory category, String ingredients, 
-                  String instructions, Integer calories) {
-        this();
-        this.name = name;
-        this.type = type;
-        this.category = category;
-        this.ingredients = ingredients;
-        this.instructions = instructions;
-        this.calories = calories;
+        this.lastUpdated = LocalDateTime.now();
     }
     
     // Getters and Setters
@@ -121,92 +119,44 @@ public class Recipe {
         this.name = name;
     }
     
-    public RecipeType getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
     
-    public void setType(RecipeType type) {
-        this.type = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
     
-    public MealCategory getCategory() {
+    public String getCategory() {
         return category;
     }
     
-    public void setCategory(MealCategory category) {
+    public void setCategory(String category) {
         this.category = category;
     }
     
-    public String getIngredients() {
-        return ingredients;
+    public String getType() {
+        return type;
     }
     
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
+    public void setType(String type) {
+        this.type = type;
     }
     
-    public String getInstructions() {
-        return instructions;
+    public String getCuisineType() {
+        return cuisineType;
     }
     
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
+    public void setCuisineType(String cuisineType) {
+        this.cuisineType = cuisineType;
     }
     
-    public Integer getCalories() {
-        return calories;
+    public String getDietType() {
+        return dietType;
     }
     
-    public void setCalories(Integer calories) {
-        this.calories = calories;
-    }
-    
-    public BigDecimal getProtein() {
-        return protein;
-    }
-    
-    public void setProtein(BigDecimal protein) {
-        this.protein = protein;
-    }
-    
-    public BigDecimal getCarbs() {
-        return carbs;
-    }
-    
-    public void setCarbs(BigDecimal carbs) {
-        this.carbs = carbs;
-    }
-    
-    public BigDecimal getFat() {
-        return fat;
-    }
-    
-    public void setFat(BigDecimal fat) {
-        this.fat = fat;
-    }
-    
-    public BigDecimal getFiber() {
-        return fiber;
-    }
-    
-    public void setFiber(BigDecimal fiber) {
-        this.fiber = fiber;
-    }
-    
-    public List<String> getTags() {
-        return tags;
-    }
-    
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-    
-    public String getImageUrl() {
-        return imageUrl;
-    }
-    
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setDietType(String dietType) {
+        this.dietType = dietType;
     }
     
     public Integer getPrepTime() {
@@ -225,6 +175,14 @@ public class Recipe {
         this.cookTime = cookTime;
     }
     
+    public Integer getTotalTime() {
+        return totalTime;
+    }
+    
+    public void setTotalTime(Integer totalTime) {
+        this.totalTime = totalTime;
+    }
+    
     public Integer getServings() {
         return servings;
     }
@@ -233,12 +191,124 @@ public class Recipe {
         this.servings = servings;
     }
     
-    public Difficulty getDifficulty() {
-        return difficulty;
+    public String getDifficultyLevel() {
+        return difficultyLevel;
     }
     
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
+    public void setDifficultyLevel(String difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+    
+    public List<String> getIngredients() {
+        return ingredients;
+    }
+    
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
+    }
+    
+    public List<String> getInstructions() {
+        return instructions;
+    }
+    
+    public void setInstructions(List<String> instructions) {
+        this.instructions = instructions;
+    }
+    
+    public Integer getCalories() {
+        return calories;
+    }
+    
+    public void setCalories(Integer calories) {
+        this.calories = calories;
+    }
+    
+    public Double getProtein() {
+        return protein;
+    }
+    
+    public void setProtein(Double protein) {
+        this.protein = protein;
+    }
+    
+    public Double getCarbs() {
+        return carbs;
+    }
+    
+    public void setCarbs(Double carbs) {
+        this.carbs = carbs;
+    }
+    
+    public Double getFat() {
+        return fat;
+    }
+    
+    public void setFat(Double fat) {
+        this.fat = fat;
+    }
+    
+    public Double getFiber() {
+        return fiber;
+    }
+    
+    public void setFiber(Double fiber) {
+        this.fiber = fiber;
+    }
+    
+    public Double getSugar() {
+        return sugar;
+    }
+    
+    public void setSugar(Double sugar) {
+        this.sugar = sugar;
+    }
+    
+    public Double getSodium() {
+        return sodium;
+    }
+    
+    public void setSodium(Double sodium) {
+        this.sodium = sodium;
+    }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    
+    public String getSource() {
+        return source;
+    }
+    
+    public void setSource(String source) {
+        this.source = source;
+    }
+    
+    public String getExternalId() {
+        return externalId;
+    }
+    
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+    
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+    
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
+    }
+    
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+    
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
     
     public LocalDateTime getCreatedAt() {
@@ -256,9 +326,4 @@ public class Recipe {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-} 
+}

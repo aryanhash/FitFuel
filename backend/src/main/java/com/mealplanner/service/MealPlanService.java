@@ -55,7 +55,7 @@ public class MealPlanService {
      * Generate meal plan for a specific day
      */
     public void generateMealPlanForDay(LocalDate date, int year) {
-        String[] mealTypes = {"breakfast", "lunch", "dinner", "snack"};
+        String[] mealTypes = {"BREAKFAST", "LUNCH", "DINNER", "SNACK"};
         
         for (String mealType : mealTypes) {
             // Check if meal plan already exists for this date and meal type
@@ -96,7 +96,7 @@ public class MealPlanService {
      * Generate personalized meal plan for a specific day
      */
     public void generatePersonalizedMealPlanForDay(LocalDate date, int year, UserPreferences preferences) {
-        String[] mealTypes = {"breakfast", "lunch", "dinner", "snack"};
+        String[] mealTypes = {"BREAKFAST", "LUNCH", "DINNER", "SNACK"};
         
         for (String mealType : mealTypes) {
             if (!dailyMealPlanRepository.existsByMealDateAndMealTypeAndCreatedForYear(date, mealType, year)) {
@@ -118,7 +118,7 @@ public class MealPlanService {
             return mealRepository.findRandomByMealType(mealType).orElse(null);
         }
         
-        String diet = preferences.getFoodPreference();
+        String diet = preferences.getDietType();
         Integer maxCalories = preferences.getDailyCalorieTarget() != null ? 
             preferences.getDailyCalorieTarget() / 4 : 500; // Divide daily target by 4 meals
         
@@ -245,10 +245,10 @@ public class MealPlanService {
         
         // Count by meal type
         Map<String, Long> mealTypeCounts = new HashMap<>();
-        mealTypeCounts.put("breakfast", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("breakfast", year));
-        mealTypeCounts.put("lunch", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("lunch", year));
-        mealTypeCounts.put("dinner", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("dinner", year));
-        mealTypeCounts.put("snack", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("snack", year));
+        mealTypeCounts.put("BREAKFAST", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("BREAKFAST", year));
+        mealTypeCounts.put("LUNCH", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("LUNCH", year));
+        mealTypeCounts.put("DINNER", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("DINNER", year));
+        mealTypeCounts.put("SNACK", dailyMealPlanRepository.countByMealTypeAndCreatedForYear("SNACK", year));
         stats.put("mealTypeCounts", mealTypeCounts);
         
         // Date range

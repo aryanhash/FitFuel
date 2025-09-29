@@ -16,17 +16,7 @@ public interface UserPreferencesRepository extends JpaRepository<UserPreferences
     Optional<UserPreferences> findByUser(User user);
     
     /**
-     * Find user preferences by user ID
-     */
-    Optional<UserPreferences> findByUserId(Long userId);
-    
-    /**
-     * Check if user preferences exist for a user
+     * Check if preferences exist for user
      */
     boolean existsByUser(User user);
-    
-    /**
-     * Check if user preferences exist for a user ID
-     */
-    boolean existsByUserId(Long userId);
-} 
+}

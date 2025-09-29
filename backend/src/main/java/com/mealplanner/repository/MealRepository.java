@@ -40,7 +40,7 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
     /**
      * Find a random meal by type
      */
-    @Query(value = "SELECT * FROM meals WHERE meal_type = :mealType ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM recipes WHERE category = :mealType ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Optional<Meal> findRandomByMealType(@Param("mealType") String mealType);
     
     /**

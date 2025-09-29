@@ -1,5 +1,6 @@
 package com.mealplanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Table(name = "daily_meal_plans", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"meal_date", "meal_type", "created_for_year"})
 })
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class DailyMealPlan {
     
     @Id
@@ -22,6 +24,7 @@ public class DailyMealPlan {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meal_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Meal meal;
     
     @Column(name = "created_for_year", nullable = false)

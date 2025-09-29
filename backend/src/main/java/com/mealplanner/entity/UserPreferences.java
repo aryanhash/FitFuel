@@ -1,11 +1,14 @@
 package com.mealplanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
 @Table(name = "user_preferences")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserPreferences {
     
     @Id
@@ -13,39 +16,32 @@ public class UserPreferences {
     private Long id;
     
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    
+    @Column(name = "diet_type")
+    private String dietType;
     
     @Column(name = "daily_calorie_target")
     private Integer dailyCalorieTarget;
     
-    @Column(name = "food_preference")
-    private String foodPreference; // e.g., "vegetarian", "vegan", "keto", etc.
-    
-    @ElementCollection
-    @CollectionTable(name = "user_allergies", joinColumns = @JoinColumn(name = "user_preferences_id"))
-    @Column(name = "allergy")
+    @Column(name = "allergies", columnDefinition = "TEXT[]")
     private List<String> allergies;
     
-    @ElementCollection
-    @CollectionTable(name = "user_dislikes", joinColumns = @JoinColumn(name = "user_preferences_id"))
-    @Column(name = "dislike")
+    @Column(name = "dislikes", columnDefinition = "TEXT[]")
     private List<String> dislikes;
     
-    @Column(name = "preferred_cuisine")
-    private String preferredCuisine;
+    @Column(name = "preferred_cuisines", columnDefinition = "TEXT[]")
+    private List<String> preferredCuisines;
     
     @Column(name = "cooking_skill_level")
-    private String cookingSkillLevel; // "beginner", "intermediate", "advanced"
+    private String cookingSkillLevel;
     
-    @Column(name = "max_prep_time")
-    private Integer maxPrepTime; // in minutes
+    @Column(name = "meal_reminders")
+    private Boolean mealReminders;
     
-    @Column(name = "max_cook_time")
-    private Integer maxCookTime; // in minutes
-    
-    @Column(name = "serving_size")
-    private Integer servingSize;
+    @Column(name = "notification_time")
+    private LocalTime notificationTime;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -53,16 +49,10 @@ public class UserPreferences {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Default constructor
+    // Constructors
     public UserPreferences() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-    }
-    
-    // Constructor with required fields
-    public UserPreferences(User user) {
-        this();
-        this.user = user;
     }
     
     // Getters and Setters
@@ -82,20 +72,20 @@ public class UserPreferences {
         this.user = user;
     }
     
+    public String getDietType() {
+        return dietType;
+    }
+    
+    public void setDietType(String dietType) {
+        this.dietType = dietType;
+    }
+    
     public Integer getDailyCalorieTarget() {
         return dailyCalorieTarget;
     }
     
     public void setDailyCalorieTarget(Integer dailyCalorieTarget) {
         this.dailyCalorieTarget = dailyCalorieTarget;
-    }
-    
-    public String getFoodPreference() {
-        return foodPreference;
-    }
-    
-    public void setFoodPreference(String foodPreference) {
-        this.foodPreference = foodPreference;
     }
     
     public List<String> getAllergies() {
@@ -114,12 +104,12 @@ public class UserPreferences {
         this.dislikes = dislikes;
     }
     
-    public String getPreferredCuisine() {
-        return preferredCuisine;
+    public List<String> getPreferredCuisines() {
+        return preferredCuisines;
     }
     
-    public void setPreferredCuisine(String preferredCuisine) {
-        this.preferredCuisine = preferredCuisine;
+    public void setPreferredCuisines(List<String> preferredCuisines) {
+        this.preferredCuisines = preferredCuisines;
     }
     
     public String getCookingSkillLevel() {
@@ -130,28 +120,20 @@ public class UserPreferences {
         this.cookingSkillLevel = cookingSkillLevel;
     }
     
-    public Integer getMaxPrepTime() {
-        return maxPrepTime;
+    public Boolean getMealReminders() {
+        return mealReminders;
     }
     
-    public void setMaxPrepTime(Integer maxPrepTime) {
-        this.maxPrepTime = maxPrepTime;
+    public void setMealReminders(Boolean mealReminders) {
+        this.mealReminders = mealReminders;
     }
     
-    public Integer getMaxCookTime() {
-        return maxCookTime;
+    public LocalTime getNotificationTime() {
+        return notificationTime;
     }
     
-    public void setMaxCookTime(Integer maxCookTime) {
-        this.maxCookTime = maxCookTime;
-    }
-    
-    public Integer getServingSize() {
-        return servingSize;
-    }
-    
-    public void setServingSize(Integer servingSize) {
-        this.servingSize = servingSize;
+    public void setNotificationTime(LocalTime notificationTime) {
+        this.notificationTime = notificationTime;
     }
     
     public LocalDateTime getCreatedAt() {
@@ -169,9 +151,4 @@ public class UserPreferences {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-} 
+}

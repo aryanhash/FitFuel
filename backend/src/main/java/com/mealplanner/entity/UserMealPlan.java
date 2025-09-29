@@ -1,13 +1,13 @@
 package com.mealplanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_meal_plans", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"user_id", "date", "meal_time", "year"})
-})
+@Table(name = "user_meal_plans")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserMealPlan {
     
     @Id
@@ -21,22 +21,21 @@ public class UserMealPlan {
     @Column(name = "date", nullable = false)
     private LocalDate date;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "meal_time", nullable = false)
-    private MealTime mealTime;
+    @Column(name = "meal_type", nullable = false)
+    private String mealType;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
     
-    @Column(name = "year", nullable = false)
-    private Integer year;
+    @Column(name = "is_favorite")
+    private Boolean isFavorite;
     
-    @Column(name = "is_eaten")
-    private Boolean isEaten;
+    @Column(name = "rating")
+    private Integer rating;
     
-    @Column(name = "is_skipped")
-    private Boolean isSkipped;
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -44,26 +43,11 @@ public class UserMealPlan {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    public enum MealTime {
-        BREAKFAST, LUNCH, DINNER
-    }
-    
-    // Default constructor
+    // Constructors
     public UserMealPlan() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.isEaten = false;
-        this.isSkipped = false;
-    }
-    
-    // Constructor with required fields
-    public UserMealPlan(User user, LocalDate date, MealTime mealTime, Recipe recipe, Integer year) {
-        this();
-        this.user = user;
-        this.date = date;
-        this.mealTime = mealTime;
-        this.recipe = recipe;
-        this.year = year;
+        this.isFavorite = false;
     }
     
     // Getters and Setters
@@ -91,12 +75,12 @@ public class UserMealPlan {
         this.date = date;
     }
     
-    public MealTime getMealTime() {
-        return mealTime;
+    public String getMealType() {
+        return mealType;
     }
     
-    public void setMealTime(MealTime mealTime) {
-        this.mealTime = mealTime;
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
     }
     
     public Recipe getRecipe() {
@@ -107,28 +91,28 @@ public class UserMealPlan {
         this.recipe = recipe;
     }
     
-    public Integer getYear() {
-        return year;
+    public Boolean getIsFavorite() {
+        return isFavorite;
     }
     
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setIsFavorite(Boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
     
-    public Boolean getIsEaten() {
-        return isEaten;
+    public Integer getRating() {
+        return rating;
     }
     
-    public void setIsEaten(Boolean isEaten) {
-        this.isEaten = isEaten;
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
     
-    public Boolean getIsSkipped() {
-        return isSkipped;
+    public String getNotes() {
+        return notes;
     }
     
-    public void setIsSkipped(Boolean isSkipped) {
-        this.isSkipped = isSkipped;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
     
     public LocalDateTime getCreatedAt() {
@@ -146,9 +130,4 @@ public class UserMealPlan {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-} 
+}

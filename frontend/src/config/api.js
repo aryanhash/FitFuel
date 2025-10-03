@@ -6,8 +6,8 @@ const API_CONFIG = {
   },
   // Production
   production: {
-    baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.onrender.com',
-    apiURL: process.env.REACT_APP_API_BASE_URL || 'https://your-backend-url.onrender.com/api'
+    baseURL: process.env.REACT_APP_API_URL || 'https://fitfuel-backend.onrender.com',
+    apiURL: process.env.REACT_APP_API_BASE_URL || 'https://fitfuel-backend.onrender.com/api'
   }
 };
 

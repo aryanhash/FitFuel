@@ -21,8 +21,11 @@ public class UserMealPlan {
     @Column(name = "date", nullable = false)
     private LocalDate date;
     
-    @Column(name = "meal_type", nullable = false)
+    @Column(name = "meal_time", nullable = false)
     private String mealType;
+    
+    @Column(name = "year", nullable = false)
+    private Integer year;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", nullable = false)
@@ -81,6 +84,14 @@ public class UserMealPlan {
     
     public void setMealType(String mealType) {
         this.mealType = mealType;
+    }
+    
+    public Integer getYear() {
+        return year;
+    }
+    
+    public void setYear(Integer year) {
+        this.year = year;
     }
     
     public Recipe getRecipe() {

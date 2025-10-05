@@ -1,26 +1,26 @@
 # Multi-stage build: First stage for building
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM amazoncorretto:17-alpine AS builder
+
+# Install Maven
+RUN apk add --no-cache maven
 
 # Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
-COPY backend/mvnw backend/mvnw.cmd backend/pom.xml ./
-
-# Make mvnw executable
-RUN chmod +x ./mvnw
+# Copy pom.xml first for better caching
+COPY backend/pom.xml ./
 
 # Download dependencies (this layer will be cached)
-RUN ./mvnw dependency:go-offline -B
+RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY backend/src ./src
 
 # Build the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Second stage: Runtime
-FROM eclipse-temurin:17-jre-alpine
+FROM amazoncorretto:17-alpine
 
 # Set working directory
 WORKDIR /app

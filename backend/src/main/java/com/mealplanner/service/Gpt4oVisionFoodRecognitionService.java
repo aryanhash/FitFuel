@@ -23,17 +23,16 @@ public class Gpt4oVisionFoodRecognitionService implements FoodRecognitionService
     private final ObjectMapper objectMapper;
     private final String openAiApiKey;
 
-    public Gpt4oVisionFoodRecognitionService() {
+    public Gpt4oVisionFoodRecognitionService(String apiKey) {
         this.httpClient = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
-        this.openAiApiKey = System.getProperty("GPT4O_API_KEY");
+        this.openAiApiKey = apiKey;
 
         if (openAiApiKey == null || openAiApiKey.isBlank()) {
-            logger.error("GPT4O_API_KEY not set! Please check your .env or system properties.");
-            throw new IllegalStateException("GPT4O_API_KEY is missing.");
+            logger.warn("GPT4O_API_KEY not set! Food recognition will use fallback data.");
+        } else {
+            logger.info("GPT4O_API_KEY successfully loaded (length: {})", openAiApiKey.length());
         }
-
-        logger.info("GPT4O_API_KEY successfully loaded (starts with): {}", openAiApiKey.substring(0, 10));
     }
 
     @Override

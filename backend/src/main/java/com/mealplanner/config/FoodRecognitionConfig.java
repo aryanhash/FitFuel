@@ -31,12 +31,15 @@ public class FoodRecognitionConfig {
     @Value("${clarifai.api.key:YOUR_CLARIFAI_API_KEY}")
     private String clarifaiApiKey;
     
+    @Value("${gpt4o.api.key:}")
+    private String gpt4oApiKey;
+    
     @Bean
     @Primary
     @ConditionalOnProperty(name = "food.recognition.api", havingValue = "gpt4o")
     public FoodRecognitionService gpt4oVisionFoodRecognitionService() {
-        logger.info("Creating GPT-4o Vision food recognition service");
-        return new Gpt4oVisionFoodRecognitionService();
+        logger.info("Creating GPT-4o Vision food recognition service with API key");
+        return new Gpt4oVisionFoodRecognitionService(gpt4oApiKey);
     }
     
     @Bean

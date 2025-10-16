@@ -38,7 +38,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:3000", 
             "http://localhost:3001",
-            "https://aesthetic-brioche-64722b.netlify.app"
+            "https://aesthetic-brioche-64722b.netlify.app",
+            "https://unique-stardust-330564.netlify.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

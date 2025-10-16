@@ -1,0 +1,6 @@
+# API proxy
+/api/*  https://fitfuel-backend.onrender.com/api/:splat  200
+
+# SPA fallback - must be last
+/*  /index.html  200
+

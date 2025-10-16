@@ -1,8 +1,8 @@
 const API_CONFIG = {
-  // Development
+  // Development - temporarily using production backend
   development: {
-    baseURL: 'http://localhost:8081',
-    apiURL: 'http://localhost:8081/api'
+    baseURL: 'https://fitfuel-backend.onrender.com',
+    apiURL: 'https://fitfuel-backend.onrender.com/api'
   },
   // Production
   production: {

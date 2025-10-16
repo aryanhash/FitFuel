@@ -38,10 +38,21 @@ public class Gpt4oVisionFoodRecognitionService implements FoodRecognitionService
     @Override
     public List<FoodItem> analyzeFoodImage(MultipartFile imageFile) {
         logger.info("Analyzing food image using GPT-4o Vision...");
+        
+        // Check if API key is available
+        if (openAiApiKey == null || openAiApiKey.isBlank() || openAiApiKey.contains("your_") || openAiApiKey.equals("your_gpt4o_api_key_here")) {
+            logger.error("GPT4O_API_KEY is not properly configured. Current value: {}", 
+                openAiApiKey == null ? "null" : (openAiApiKey.length() > 10 ? openAiApiKey.substring(0, 10) + "..." : "too short"));
+            logger.error("Food recognition will return fallback results. Please set GPT4O_API_KEY environment variable.");
+            return getFallbackResults();
+        }
+        
+        logger.info("Using OpenAI API key (first 10 chars): {}", openAiApiKey.substring(0, Math.min(10, openAiApiKey.length())));
 
         try {
             byte[] imageBytes = imageFile.getBytes();
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            logger.info("Image converted to base64, size: {} bytes", base64Image.length());
 
             String prompt = "You are a nutrition expert specializing in Indian cuisine. Analyze the food in this image and identify the specific Indian dish. " +
                     "If it's an Indian food, be very specific (e.g., 'Aloo Paratha', 'Masala Dosa', 'Butter Chicken', 'Dal Tadka'). " +
@@ -70,6 +81,7 @@ public class Gpt4oVisionFoodRecognitionService implements FoodRecognitionService
             ObjectNode imageUrl = imageContent.putObject("image_url");
             imageUrl.put("url", "data:image/jpeg;base64," + base64Image);
 
+            logger.info("Sending request to OpenAI API...");
             Request request = new Request.Builder()
                     .url(OPENAI_API_URL)
                     .addHeader("Authorization", "Bearer " + openAiApiKey)
@@ -77,7 +89,9 @@ public class Gpt4oVisionFoodRecognitionService implements FoodRecognitionService
                     .post(RequestBody.create(requestBody.toString(), MediaType.parse("application/json")))
                     .build();
 
+            logger.info("Making API call to: {}", OPENAI_API_URL);
             try (Response response = httpClient.newCall(request).execute()) {
+                logger.info("Received response from OpenAI. Status code: {}", response.code());
                 if (!response.isSuccessful()) {
                     String errorBody = response.body() != null ? response.body().string() : "No error body";
                     logger.error("OpenAI API error: {} - {}", response.code(), errorBody);
